@@ -60,6 +60,7 @@ class WordGuesserGame
         won = true
       else
         won = false
+        break
       end
     end
     if won
