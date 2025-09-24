@@ -4,8 +4,75 @@ class WordGuesserGame
 
   # Get a word from remote "random word" service
 
-  def initialize(word)
-    @word = word
+
+  attr_accessor :word
+  attr_accessor :guesses
+  attr_accessor :wrong_guesses
+  
+  def initialize(new_word)
+    @word = new_word
+    @guesses = ''
+    @wrong_guesses = ''
+
+  end
+
+  def guess(guessed)
+    if (guessed == '') || (guessed.nil?) 
+      raise ArgumentError, "Can't guess an empty string"
+    end
+    guessed.each_char do |letter|
+      if !(letter =~/^[a-zA-Z]$/)
+        raise ArgumentError, "Must guess a letter"
+      end
+      letter = letter.downcase
+      if @word.downcase.include?(letter) 
+        if @guesses.include?(letter)
+          return false
+        else
+          @guesses += letter
+        end
+      else 
+        if @wrong_guesses.include?(letter)
+          return false
+        else
+          @wrong_guesses += letter
+        end
+      end
+    end
+  end
+
+  def word_with_guesses()
+    output = ''
+    @word.each_char do |letter|
+      if @guesses.include?(letter)
+        output += letter
+      else
+        output += '-'
+      end
+    end
+    return output
+  end
+
+  def check_win_or_lose()
+    won = false
+    @word.each_char do |letter|
+      if @guesses.include?(letter)
+        won = true
+      else
+        won = false
+      end
+    end
+    if won
+      return :win
+    else
+      if @guesses.length + @wrong_guesses.length <
+        7
+        return :play
+      else
+        return :lose
+      end
+    end
+
   end
 
   # You can test it by installing irb via $ gem install irb
